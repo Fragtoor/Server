@@ -18,13 +18,13 @@ def geocoding(cord, request):
 
     response = requests.get(geocode_api_server, params=geocode_params)
     if not response:
-        return {'error': 'Not Found'}
+        raise Exception('Топоним не найден')
     json_response = response.json()
     try:
         toponym = json_response["response"]["GeoObjectCollection"][
             "featureMember"][0]["GeoObject"]
     except IndexError:
-        return {'error': 'Not Found'}
+        raise Exception('Топоним не найден')
     toponym_cord = list(map(float, toponym["Point"]["pos"].split()))
     address = toponym['metaDataProperty']['GeocoderMetaData']['AddressDetails']['Country']['AddressLine']
     result = {'coordinates': toponym_cord, 'address': address}

@@ -1,10 +1,21 @@
-from flask import Flask
+from flask import Flask, jsonify
 from flask_restful import Api
 import find_toponym_resource
 import get_route
 
 app = Flask(__name__)
 api = Api(app)
+
+
+# Обработчик ошибок для JSON
+@app.errorhandler(400)
+def bad_request(error):
+    return jsonify({'status': 'error', 'message': error.description}), 400
+
+
+@app.errorhandler(404)
+def not_found(error):
+    return jsonify({'status': 'error', 'message': error.description}), 404
 
 
 if __name__ == '__main__':

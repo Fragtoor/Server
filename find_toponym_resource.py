@@ -12,14 +12,24 @@ parser.add_argument('request', required=True, type=str)
 
 class FindToponymResource(Resource):
     def post(self):
-        args = parser.parse_args()
-        toponym = geocoding(
-            args['coordinates'],
-            args['request']
-        )
-
-        if 'error' in toponym:
-            return abort(404, message=toponym['error'])
+        try:
+            args = parser.parse_args()
+            # Проверка на правильный тип данных
+            list(map(float, args['coordinates'].split(', ')))
+        except ValueError:
+            abort(400, message={'status': 'unsuccess', 'message': 'Неверный формат или тип данных'})
+            return
+        except Exception as e:
+            abort(404, message={'status': 'unsuccess', 'message': e})
+            return
+        try:
+            toponym = geocoding(
+                args['coordinates'],
+                args['request']
+            )
+        except Exception as e:
+            abort(404, message={'status': 'unsuccess', 'message': e})
+            return
 
         result = {
             'status': 'success',
