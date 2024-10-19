@@ -1,4 +1,3 @@
-
 import requests
 from dotenv import load_dotenv
 import os
@@ -28,5 +27,5 @@ def geocoding(cord, request):
         return {'error': 'Not Found'}
     toponym_cord = list(map(float, toponym["Point"]["pos"].split()))
     address = toponym['metaDataProperty']['GeocoderMetaData']['AddressDetails']['Country']['AddressLine']
-    result = (toponym_cord, address)
+    result = {'coordinates': toponym_cord, 'address': address}
     return result
